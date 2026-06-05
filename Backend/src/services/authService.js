@@ -1,8 +1,8 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 
-const registerUser = async ({name, email, password}) => {
-    const existingUser= await User.findOne({ email });
+const registerUser = async ({ name, email, password }) => {
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
         const error = new Error('Email already in use');
@@ -20,15 +20,15 @@ const registerUser = async ({name, email, password}) => {
     const token = generateToken(user._id, user.role);
 
     return {
-        user:{
+        user: {
             id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
         },
         token,
-        };
     };
+};
 
 const loginUser = async ({ email, password }) => {
     const user = await User.findOne({ email }).select('+password');
@@ -38,7 +38,7 @@ const loginUser = async ({ email, password }) => {
         error.statusCode = 401;
         throw error;
     }
-    
+
     const isPasswordMatch = await user.matchPassword(password);
 
     if (!isPasswordMatch) {
@@ -50,7 +50,7 @@ const loginUser = async ({ email, password }) => {
     const token = generateToken(user._id, user.role);
 
     return {
-        user:{
+        user: {
             id: user._id,
             name: user.name,
             email: user.email,
