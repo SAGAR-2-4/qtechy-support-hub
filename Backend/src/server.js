@@ -4,8 +4,11 @@ const dotenv = require('dotenv');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const  connectDB = require('./config/db');
+
 
 dotenv.config();
+connectDB();
 
 const app = express();
 
