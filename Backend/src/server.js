@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const  connectDB = require('./config/db');
 const errorHandler = require("./middleware/errorMiddleware");
-
+const ticketRoutes =  require("./routes/ticketRoutes")
 dotenv.config();
 connectDB();
 
@@ -43,6 +43,8 @@ app.get('/', (req, res) => {
 
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
+
+app.use("/api/tickets", ticketRoutes);
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({
