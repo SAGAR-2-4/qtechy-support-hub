@@ -10,13 +10,16 @@ const {
   getTickets,
   assignTicket,
   addComment,
+  updateTicketStatus
 } = require("../controllers/ticketController");
 
 const {
   createTicketValidator,
   assignTicketValidator,
   addCommentValidator,
+  updateStatusValidator
 } = require("../validators/ticketValidator");
+
 
 router.post("/", protect, createTicketValidator, validateRequest, createTicket);
 
@@ -37,6 +40,15 @@ router.post(
   addCommentValidator,
   validateRequest,
   addComment
+  
+);
+
+router.patch(
+  "/:ticketId/status",
+  protect,
+  updateStatusValidator,
+  validateRequest,
+  updateTicketStatus
 );
 
 module.exports = router;

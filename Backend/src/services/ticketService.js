@@ -147,11 +147,56 @@ const addComment = async (ticketId, comment, user) => {
 
   return updatedTicket;
 };
+
+const updateTicketStatus = async (ticketId, status, note, user) => {
+    const ticket = await Ticket.findById(ticketId);
+
+    if(!ticket){
+        const error = new Error("Ticket not found");
+        error.statusCode = 404;
+        throw error;
+    }
+     const isAdmin = user.role === "admin";
+  const isAssignedAgent =
+    ticket.assignedTo && ticket.assignedTo.toString() === user._id.toString();
+
+  if (!isAdmin && !isAssignedAgent) {
+    const error = new Error("You are not allowed to update this ticket status");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  if (ticket.status === status) {
+    const error = new Error(`Ticket status is already ${status}`);
+    error.statusCode = 400;
+    throw error;
+  }
+
+  ticket.status = status;
+
+  ticket.statusHistory.push({
+    status,
+    changedBy: user._id,
+    note: note || `Status changed to ${status}`,
+  });
+
+  await ticket.save();
+
+  const updatedTicket = await Ticket.findById(ticket._id)
+    .populate("createdBy", "name email")
+    .populate("assignedTo", "name email")
+    .populate("comments.commentedBy", "name email")
+    .populate("statusHistory.changedBy", "name email");
+
+  return updatedTicket;
+};
+
 module.exports = {
     createTicket,
     getTickets,
     assignTicket,
     addComment,
+    updateTicketStatus,
 };
 
 
