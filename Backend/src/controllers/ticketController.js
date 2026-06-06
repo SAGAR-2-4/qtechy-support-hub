@@ -51,8 +51,30 @@ const assignTicket = async(req, res, next) => {
 
     }
 };
+
+const addComment = async (req, res, next) => {
+    try{
+        const ticket = await ticketService.addComment(
+            req.params.ticketId,
+            req.body.comment,
+            req.user
+        );
+        
+        res.status(200).json({
+            success: true,
+            message: 'Comment added successfully',
+            data: ticket,
+        });
+
+    }catch(error){
+        next(error);
+    }
+};
+
+
 module.exports = {
     createTicket,
     getTickets,
     assignTicket,
+    addComment,
 };

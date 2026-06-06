@@ -112,10 +112,46 @@ const updatedTicket = await Ticket.findById(ticket._id)
 return updatedTicket;
 };
 
+const addComment = async (ticketId, comment, user) => {
+  const ticket = await Ticket.findById(ticketId);
+
+  if (!ticket) {
+    const error = new Error("Ticket not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const isAdmin = user.role === "admin";
+  const isCreator = ticket.createdBy.toString() === user._id.toString();
+  const isAssignedAgent =
+    ticket.assignedTo && ticket.assignedTo.toString() === user._id.toString();
+
+  if (!isAdmin && !isCreator && !isAssignedAgent) {
+    const error = new Error("You are not allowed to comment on this ticket");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  ticket.comments.push({
+    comment,
+    commentedBy: user._id,
+  });
+
+  await ticket.save();
+
+  const updatedTicket = await Ticket.findById(ticket._id)
+    .populate("createdBy", "name email")
+    .populate("assignedTo", "name email")
+    .populate("comments.commentedBy", "name email")
+    .populate("statusHistory.changedBy", "name email");
+
+  return updatedTicket;
+};
 module.exports = {
     createTicket,
     getTickets,
     assignTicket,
+    addComment,
 };
 
 
