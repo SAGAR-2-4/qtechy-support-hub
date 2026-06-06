@@ -70,6 +70,24 @@ const addComment = async (req, res, next) => {
         next(error);
     }
 };
+const updateTicketStatus = async (req, res, next) => {
+  try {
+    const ticket = await ticketService.updateTicketStatus(
+      req.params.ticketId,
+      req.body.status,
+      req.body.note,
+      req.user
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Ticket status updated successfully",
+      data: ticket,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 module.exports = {
@@ -77,4 +95,5 @@ module.exports = {
     getTickets,
     assignTicket,
     addComment,
+    updateTicketStatus,
 };

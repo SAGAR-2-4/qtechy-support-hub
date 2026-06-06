@@ -53,8 +53,23 @@ const addCommentValidator = [
     .withMessage("Comment must be between 2 and 1000 characters"),
 ];
 
+const updateStatusValidator = [
+  body("status")
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(["Open", "In Progress", "Resolved", "Closed"])
+    .withMessage("Invalid status"),
+
+  body("note")
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage("Note cannot exceed 500 characters"),
+];
+
 module.exports = {
     createTicketValidator,
     assignTicketValidator,
     addCommentValidator,
+    updateStatusValidator
 };
