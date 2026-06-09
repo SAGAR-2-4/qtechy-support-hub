@@ -8,6 +8,7 @@ const  connectDB = require('./config/db');
 const errorHandler = require("./middleware/errorMiddleware");
 const ticketRoutes =  require("./routes/ticketRoutes")
 const userRoutes = require("./routes/userRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 dotenv.config();
 connectDB();
 
@@ -46,6 +47,8 @@ const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
 app.use("/api/tickets", ticketRoutes);
+
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({
