@@ -191,12 +191,41 @@ const updateTicketStatus = async (ticketId, status, note, user) => {
   return updatedTicket;
 };
 
+const getTicketById = async (ticketId, user) => {
+  const ticket = await Ticket.findById(ticketId)
+    .populate("createdBy", "name email role")
+    .populate("assignedTo", "name email role")
+    .populate("comments.commentedBy", "name email role")
+    .populate("statusHistory.changedBy", "name email role");
+
+  if (!ticket) {
+    const error = new Error("Ticket not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const isAdmin = user.role === "admin";
+  const isCreator = ticket.createdBy._id.toString() === user._id.toString();
+  const isAssignedAgent =
+    ticket.assignedTo &&
+    ticket.assignedTo._id.toString() === user._id.toString();
+
+  if (!isAdmin && !isCreator && !isAssignedAgent) {
+    const error = new Error("You are not allowed to view this ticket");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  return ticket;
+};
+
 module.exports = {
     createTicket,
     getTickets,
     assignTicket,
     addComment,
     updateTicketStatus,
+    getTicketById,
 };
 
 

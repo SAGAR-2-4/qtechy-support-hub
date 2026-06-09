@@ -10,7 +10,8 @@ const {
   getTickets,
   assignTicket,
   addComment,
-  updateTicketStatus
+  updateTicketStatus,
+  getTicketById,
 } = require("../controllers/ticketController");
 
 const {
@@ -21,9 +22,12 @@ const {
 } = require("../validators/ticketValidator");
 
 
+
 router.post("/", protect, createTicketValidator, validateRequest, createTicket);
 
 router.get("/", protect, getTickets);
+
+router.get("/:ticketId", protect, getTicketById);
 
 router.patch(
   "/:ticketId/assign",
@@ -50,5 +54,7 @@ router.patch(
   validateRequest,
   updateTicketStatus
 );
+
+
 
 module.exports = router;
