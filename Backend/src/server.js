@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 const  connectDB = require('./config/db');
 const errorHandler = require("./middleware/errorMiddleware");
 const ticketRoutes =  require("./routes/ticketRoutes")
+const userRoutes = require("./routes/userRoutes");
 dotenv.config();
 connectDB();
 
@@ -53,6 +54,7 @@ app.get("/api/health", (req, res) => {
         service: "API is healthy"
     });
 });
+app.use("/api/users", userRoutes);
 app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
