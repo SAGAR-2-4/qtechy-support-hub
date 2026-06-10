@@ -106,6 +106,21 @@ const getTicketById = async (req, res, next) => {
     }
 };
 
+const getMyTickets = async (req, res, next) =>  {
+    try{
+        const tickets = await  ticketService.getMyTickets(req.user._id);
+
+        res.status(200).json({
+            success: true,
+            message:"My tickets fetched successfully",
+            data: tickets,
+        });
+        
+    }catch(error) {
+        next(error);
+    };
+}
+
 module.exports = {
     createTicket,
     getTickets,
@@ -113,4 +128,5 @@ module.exports = {
     addComment,
     updateTicketStatus,
     getTicketById,
+    getMyTickets,
 };

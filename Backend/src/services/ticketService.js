@@ -219,6 +219,17 @@ const getTicketById = async (ticketId, user) => {
   return ticket;
 };
 
+const getMyTickets = async (userId) => {
+    const tickets = await Ticket.find({createdBy: userId})
+    .populate("createdBy", "name email role")
+    .populate("assignedTo", "name email role")
+    .populate("comments.commentedBy", "name email role")
+.populate("statusHistory.changedBy", "name email role")
+    .sort({created: -1});
+
+    return tickets;
+}
+
 module.exports = {
     createTicket,
     getTickets,
@@ -226,6 +237,7 @@ module.exports = {
     addComment,
     updateTicketStatus,
     getTicketById,
+    getMyTickets,
 };
 
 
