@@ -1,10 +1,10 @@
-import { LayoutDashboard,Ticket, Users, LogOut } from "lucide-react";
-import {NavLink} from "react-router-dom";
+import { LayoutDashboard, Ticket, Users, LogOut } from "lucide-react";
+import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
 
 
-function Sidebar(){
+function Sidebar() {
     const dispatch = useDispatch();
 
     return (
@@ -19,35 +19,36 @@ function Sidebar(){
                 <NavLink
                     to="/admin/dashboard"
                     className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
-                        <LayoutDashboard size={18} />
-                        Dashboard
+                    <LayoutDashboard size={18} />
+                    Dashboard
                 </NavLink>
 
                 <NavLink
-                    to="tickets"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
-                        <Ticket size={18} />
-                        Tickets
-                    </NavLink>
+                    to="/admin/dashboard/tickets"
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800"
+                >
+                    <Ticket size={18} />
+                    Tickets
+                </NavLink>
 
-                    <NavLink    
-                        to="/users"
-                        className="flex items-center gap-3 px-4 rounded-lg hover:bg-slate-800">
-                            <Users size={18}/>
-                            Users
-                        </NavLink>
+                <NavLink
+                    to="/users"
+                    className="flex items-center gap-3 px-4 rounded-lg hover:bg-slate-800">
+                    <Users size={18} />
+                    Users
+                </NavLink>
             </nav>
-<div className="p-4 border-t border-slate-800">
-        <button
-          onClick={() => dispatch(logout())}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-red-400"
-        >
-          <LogOut size={18} />
-          Logout
-        </button>
-      </div>
-    </aside>
-  );
+            <div className="p-4 border-t border-slate-800">
+                <button
+                    onClick={() => dispatch(logout())}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-500/20 text-red-400"
+                >
+                    <LogOut size={18} />
+                    Logout
+                </button>
+            </div>
+        </aside>
+    );
 }
 
 export default Sidebar;

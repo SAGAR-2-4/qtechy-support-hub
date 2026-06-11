@@ -6,8 +6,8 @@ import Register from "../pages/auth/Register";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import AgentDashboard from "../pages/agent/AgentDashboard";
 import UserDashboard from "../pages/user/UserDashboard";
-
 import ProtectedRoute from "./ProtectedRoute";
+import Tickets from "../pages/admin/Tickets";
 
 function AppRoute() {
     return(
@@ -42,7 +42,17 @@ function AppRoute() {
                     </ProtectedRoute>
                  }
                 />
+
+               <Route
+  path="/admin/dashboard/tickets"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <Tickets />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
+        
     );
 }
 
