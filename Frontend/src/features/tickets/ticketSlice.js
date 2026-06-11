@@ -31,6 +31,41 @@ export const getTicketById = createAsyncThunk(
     }
 );
 
+export const addTicketComment = createAsyncThunk(
+    "tickets/addTicketComment",
+    async ({ ticketId, comment }, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(`/tickets/${ticketId}/comments`, {
+                comment,
+            });
+
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to add comment"
+            );
+        }
+    }
+);
+
+export const updateTicketStatus = createAsyncThunk(
+    "tickets/updateTicketStatus",
+    async ({ ticketId, status, note }, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.patch(`/tickets/${ticketId}/status`, {
+                status,
+                note,
+            });
+
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to update ticket status"
+            );
+        }
+    }
+);
+
 const initialState = {
     tickets: [],
     selectedTicket: null,
@@ -71,6 +106,30 @@ const ticketSlice = createSlice({
                 state.selectedTicket = action.payload;
             })
             .addCase(getTicketById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(addTicketComment.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addTicketComment.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedTicket = action.payload;
+            })
+            .addCase(addTicketComment.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateTicketStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateTicketStatus.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedTicket = action.payload;
+            })
+            .addCase(updateTicketStatus.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });
