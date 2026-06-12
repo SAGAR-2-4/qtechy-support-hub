@@ -9,6 +9,8 @@ import UserDashboard from "../pages/user/UserDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import Tickets from "../pages/admin/Tickets";
 import TicketDetails from "../pages/TicketDetails";
+import CreateTicket from "../pages/user/CreateTicket";
+
 
 function AppRoute() {
     return (
@@ -24,7 +26,7 @@ function AppRoute() {
                 }
             />
 
-             <Route
+            <Route
                 path="/agent/dashboard"
                 element={
                     <ProtectedRoute allowedRoles={["agent"]}>
@@ -33,7 +35,7 @@ function AppRoute() {
                 }
             />
 
-             <Route
+            <Route
                 path="/user/dashboard"
                 element={
                     <ProtectedRoute allowedRoles={["user"]}>
@@ -64,7 +66,7 @@ function AppRoute() {
                 path="/admin/dashboard/tickets"
                 element={
                     <ProtectedRoute allowedRoles={["admin"]}>
-                        <Tickets/>
+                        <Tickets />
                     </ProtectedRoute>
                 }
 
@@ -74,6 +76,14 @@ function AppRoute() {
                 element={
                     <ProtectedRoute allowedRoles={["admin", "agent", "user"]}>
                         <TicketDetails />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/user/dashboard/create-ticket"
+                element={
+                    <ProtectedRoute allowedRoles={["user", "admin", "agent"]}>
+                        <CreateTicket />
                     </ProtectedRoute>
                 }
             />
