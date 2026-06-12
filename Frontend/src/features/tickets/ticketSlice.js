@@ -95,6 +95,42 @@ export const assignTicket = createAsyncThunk(
         }
     }
 );
+export const editTicket = createAsyncThunk(
+    "tickets/editTicket",
+    async ({ ticketId, ticketData }, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.patch(
+                `/tickets/${ticketId}`,
+                ticketData
+            );
+
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message ||
+                "Failed to update ticket"
+            );
+        }
+    }
+);
+
+export const deleteTicket = createAsyncThunk(
+    "tickets/deleteTicket",
+    async (ticketId, { rejectWithValue }) => {
+        try {
+            await axiosInstance.delete(
+                `/tickets/${ticketId}`
+            );
+
+            return ticketId;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message ||
+                "Failed to delete ticket"
+            );
+        }
+    }
+);
 
 const initialState = {
     tickets: [],
@@ -190,7 +226,19 @@ const ticketSlice = createSlice({
             .addCase(assignTicket.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+            })
+            .addCase(editTicket.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedTicket = action.payload;
+            })
+
+            .addCase(deleteTicket.fulfilled, (state, action) => {
+                state.loading = false;
+
+                state.tickets = state.tickets.filter(
+                    (ticket) => ticket._id !== action.payload
+                );
+            })
     },
 });
 
