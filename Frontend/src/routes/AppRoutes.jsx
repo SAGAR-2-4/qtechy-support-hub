@@ -10,7 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Tickets from "../pages/admin/Tickets";
 import TicketDetails from "../pages/TicketDetails";
 import CreateTicket from "../pages/user/CreateTicket";
-
+import Users from "../pages/admin/Users";
 
 function AppRoute() {
     return (
@@ -84,6 +84,15 @@ function AppRoute() {
                 element={
                     <ProtectedRoute allowedRoles={["user", "admin", "agent"]}>
                         <CreateTicket />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/admin/dashboard/users"
+                element={
+                    <ProtectedRoute allowedRoles={["admin"]}>
+                        <Users />
                     </ProtectedRoute>
                 }
             />
