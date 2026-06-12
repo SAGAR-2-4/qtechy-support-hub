@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -11,9 +11,35 @@ function Tickets() {
 
     const { tickets, loading, error } = useSelector((state) => state.tickets);
     const { user } = useSelector((state) => state.auth);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [priorityFilter, setPriorityFilter] = useState("");
     useEffect(() => {
         dispatch(getTickets());
     }, [dispatch]);
+    const filteredTickets = tickets.filter((ticket) => {
+        const matchesSearch =
+            ticket.title
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+            ticket.ticketNumber
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase());
+
+        const matchesStatus =
+            !statusFilter ||
+            ticket.status === statusFilter;
+
+        const matchesPriority =
+            !priorityFilter ||
+            ticket.priority === priorityFilter;
+
+        return (
+            matchesSearch &&
+            matchesStatus &&
+            matchesPriority
+        );
+    });
 
     return (
         <DashboardLayout>
@@ -23,13 +49,53 @@ function Tickets() {
                     Manage and monitor support requests.
                 </p>
             </div>
+            <div className="mb-5 flex flex-wrap gap-3 justify-between">
+                <div className="flex flex-wrap gap-3">
 
-            <div className="mb-5 flex justify-between gap-4">
-                <input
-                    type="text"
-                    placeholder="Search tickets..."
-                    className="w-80 px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                    <input
+                        type="text"
+                        placeholder="Search ticket..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-64 px-4 py-2 border border-slate-300 rounded-lg bg-white"
+                    />
+
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="px-4 py-2 border border-slate-300 rounded-lg bg-white"
+                    >
+                        <option value="">All Status</option>
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+
+                    <select
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                        className="px-4 py-2 border border-slate-300 rounded-lg bg-white"
+                    >
+                        <option value="">All Priority</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Urgent">Urgent</option>
+                    </select>
+
+                    <button
+                        onClick={() => {
+                            setSearchTerm("");
+                            setStatusFilter("");
+                            setPriorityFilter("");
+                        }}
+                        className="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50"
+                    >
+                        Clear
+                    </button>
+
+                </div>
 
                 {user?.role === "user" && (
                     <Link
@@ -64,14 +130,14 @@ function Tickets() {
                         </thead>
 
                         <tbody>
-                            {tickets.length === 0 ? (
+                            {filteredTickets.length === 0 ? (
                                 <tr>
                                     <td colSpan="6" className="p-6 text-center text-slate-500">
                                         No tickets found.
                                     </td>
                                 </tr>
                             ) : (
-                                tickets.map((ticket) => (
+                                filteredTickets.map((ticket) => (
                                     <tr key={ticket._id} className="border-t border-slate-200">
                                         <td className="p-4 font-medium text-slate-700">
                                             {ticket.ticketNumber}
