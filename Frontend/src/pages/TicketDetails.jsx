@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";
-
+import { getAgents } from "../features/users/userSlice";
+import { assignTicket } from "../features/tickets/ticketSlice";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Badge from "../components/common/Badge";
 import {
@@ -13,6 +14,8 @@ import {
 function TicketDetails() {
     const { ticketId } = useParams();
     const dispatch = useDispatch();
+    const { agents } = useSelector((state) => state.users);
+    const [agentId, setAgentId] = useState("");
 
     const { user } = useSelector((state) => state.auth);
     const { selectedTicket, loading, error } = useSelector(
@@ -43,6 +46,21 @@ function TicketDetails() {
         setComment("");
     };
 
+    const handleAssignTicket = (e) => {
+        e.preventDefault();
+
+        if (!agentId) return;
+
+        dispatch(
+            assignTicket({
+                ticketId,
+                agentId,
+            })
+        );
+
+        setAgentId("");
+    };
+
     const handleUpdateStatus = (e) => {
         e.preventDefault();
 
@@ -56,9 +74,26 @@ function TicketDetails() {
             })
         );
 
+        useEffect(() => {
+            if (user?.role === "admin") {
+                dispatch(getAgents());
+            }
+        }, [dispatch, user]);
+
         setStatus("");
         setNote("");
     };
+
+ useEffect(() => {
+    dispatch(getTicketById(ticketId));
+}, [dispatch, ticketId]);
+
+useEffect(() => {
+    if (user?.role === "admin") {
+        dispatch(getAgents());
+    }
+}, [dispatch, user]);
+
     const backPath =
         user?.role === "admin"
             ? "/admin/dashboard/tickets"
@@ -141,8 +176,37 @@ function TicketDetails() {
                             )}
                         </div>
 
+
                         <div className="space-y-6">
+
                             <div className="bg-white rounded-2xl border p-6 shadow-sm">
+                                {user?.role === "admin" && (
+                                    <div className="bg-white rounded-2xl border p-6 shadow-sm">
+                                        <h2 className="font-semibold text-lg mb-4">Assign Agent</h2>
+
+                                        <form onSubmit={handleAssignTicket} className="space-y-3">
+                                            <select
+                                                value={agentId}
+                                                onChange={(e) => setAgentId(e.target.value)}
+                                                className="w-full border border-slate-300 rounded-lg px-3 py-2"
+                                            >
+                                                <option value="">Select agent</option>
+                                                {agents.map((agent) => (
+                                                    <option key={agent._id} value={agent._id}>
+                                                        {agent.name} — {agent.email}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                            <button
+                                                type="submit"
+                                                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                                            >
+                                                Assign Ticket
+                                            </button>
+                                        </form>
+                                    </div>
+                                )}
                                 <h2 className="font-semibold text-lg mb-4">People</h2>
 
                                 <p className="text-sm text-slate-500">Created By</p>
