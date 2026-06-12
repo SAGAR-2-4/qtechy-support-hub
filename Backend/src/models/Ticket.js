@@ -108,11 +108,24 @@ const ticketSchema = new mongoose.Schema(
 );
 
 ticketSchema.pre("save", async function () {
-    if (this.ticketNumber) return;
+  if (this.ticketNumber) return;
 
-    const count = await mongoose.model("Ticket").countDocuments();
+  const lastTicket = await this.constructor
+    .findOne({ ticketNumber: { $exists: true } })
+    .sort({ createdAt: -1 });
 
-    this.ticketNumber = `TKT-${String(count + 1).padStart(4, "0")}`;
+  let nextNumber = 1;
+
+  if (lastTicket?.ticketNumber) {
+    const lastNumber = parseInt(
+      lastTicket.ticketNumber.replace("TKT-", ""),
+      10
+    );
+
+    nextNumber = lastNumber + 1;
+  }
+
+  this.ticketNumber = `TKT-${String(nextNumber).padStart(4, "0")}`;
 });
 
 module.exports = mongoose.model("Ticket", ticketSchema);
