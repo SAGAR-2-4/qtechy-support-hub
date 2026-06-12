@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
+
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import AgentDashboard from "../pages/agent/AgentDashboard";
@@ -11,12 +11,17 @@ import Tickets from "../pages/admin/Tickets";
 import TicketDetails from "../pages/TicketDetails";
 import CreateTicket from "../pages/user/CreateTicket";
 import Users from "../pages/admin/Users";
+import Register from "../pages/auth/Register";
 
 function AppRoute() {
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route
+                path="/register"
+                element={<Register />}
+            />
             <Route
                 path="/admin/dashboard"
                 element={

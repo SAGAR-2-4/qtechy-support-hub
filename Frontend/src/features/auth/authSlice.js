@@ -13,6 +13,25 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        "/auth/register",
+        userData
+      );
+
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+        "Registration failed"
+      );
+    }
+  }
+);
+
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")) || null,
   token: localStorage.getItem("token") || null,
@@ -47,7 +66,25 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+
+        localStorage.setItem(
+          "token",
+          action.payload.token
+        );
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 
