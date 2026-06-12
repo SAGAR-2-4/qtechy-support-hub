@@ -24,6 +24,24 @@ function AppRoute() {
                 }
             />
 
+             <Route
+                path="/agent/dashboard"
+                element={
+                    <ProtectedRoute allowedRoles={["agent"]}>
+                        <AgentDashboard />
+                    </ProtectedRoute>
+                }
+            />
+
+             <Route
+                path="/user/dashboard"
+                element={
+                    <ProtectedRoute allowedRoles={["user"]}>
+                        <UserDashboard />
+                    </ProtectedRoute>
+                }
+            />
+
             <Route
                 path="/agent/dashboard/tickets"
                 element={
@@ -46,7 +64,7 @@ function AppRoute() {
                 path="/admin/dashboard/tickets"
                 element={
                     <ProtectedRoute allowedRoles={["admin"]}>
-                        <Tickets />
+                        <Tickets/>
                     </ProtectedRoute>
                 }
 
