@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
-
+import { Navigate } from "react-router-dom";
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import AgentDashboard from "../pages/agent/AgentDashboard";
@@ -16,6 +16,7 @@ import Register from "../pages/auth/Register";
 function AppRoute() {
     return (
         <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
