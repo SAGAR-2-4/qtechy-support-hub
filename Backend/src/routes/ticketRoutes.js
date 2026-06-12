@@ -13,13 +13,16 @@ const {
   updateTicketStatus,
   getTicketById,
   getMyTickets,
+  updateTicket,
+  deleteTicket,
 } = require("../controllers/ticketController");
 
 const {
   createTicketValidator,
   assignTicketValidator,
   addCommentValidator,
-  updateStatusValidator
+  updateStatusValidator,
+  updateTicketValidator,
 } = require("../validators/ticketValidator");
 
 
@@ -28,7 +31,25 @@ router.post("/", protect, createTicketValidator, validateRequest, createTicket);
 
 router.get("/", protect, getTickets);
 router.get("/my-tickets", protect, getMyTickets);
+router.patch(
+  "/:ticketId",
+  protect,
+  updateTicketValidator,
+  validateRequest,
+  updateTicket
+);
+
+router.delete(
+  "/:ticketId",
+  protect,
+  authorize("admin"),
+  deleteTicket
+);
+
+
+
 router.get("/:ticketId", protect, getTicketById);
+
 
 router.patch(
   "/:ticketId/assign",
@@ -45,7 +66,7 @@ router.post(
   addCommentValidator,
   validateRequest,
   addComment
-  
+
 );
 
 router.patch(
@@ -55,6 +76,7 @@ router.patch(
   validateRequest,
   updateTicketStatus
 );
+
 
 
 

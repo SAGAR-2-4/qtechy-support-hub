@@ -66,10 +66,41 @@ const updateStatusValidator = [
         .isLength({ max: 500 })
         .withMessage("Note cannot exceed 500 characters"),
 ];
+const updateTicketValidator = [
+  body("title")
+    .optional()
+    .trim()
+    .isLength({ min: 3, max: 120 })
+    .withMessage("Title must be between 3 and 120 characters"),
+
+  body("description")
+    .optional()
+    .trim()
+    .isLength({ min: 10, max: 2000 })
+    .withMessage("Description must be between 10 and 2000 characters"),
+
+  body("category")
+    .optional()
+    .isIn([
+      "Bug",
+      "Feature Request",
+      "Technical Issue",
+      "Payment Issue",
+      "Account Issue",
+      "Other",
+    ])
+    .withMessage("Invalid category"),
+
+  body("priority")
+    .optional()
+    .isIn(["Low", "Medium", "High", "Urgent"])
+    .withMessage("Invalid priority"),
+];
 
 module.exports = {
-    createTicketValidator,
-    assignTicketValidator,
-    addCommentValidator,
-    updateStatusValidator
+  createTicketValidator,
+  assignTicketValidator,
+  addCommentValidator,
+  updateStatusValidator,
+  updateTicketValidator,
 };

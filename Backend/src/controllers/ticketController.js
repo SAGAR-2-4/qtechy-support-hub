@@ -1,24 +1,24 @@
 const ticketService = require("../services/ticketService");
 
 const createTicket = async (req, res, next) => {
-    try{
+    try {
         const ticket = await ticketService.createTicket(
             req.body,
             req.user._id
         );
 
         res.status(201).json({
-            success:true,
-            message : "Ticket created successfully",
+            success: true,
+            message: "Ticket created successfully",
             data: ticket,
         });
-    }catch (error) {
+    } catch (error) {
         next(error);
     }
 };
 
 const getTickets = async (req, res, next) => {
-    try{
+    try {
         const result = await ticketService.getTickets(
             req.user,
             req.query
@@ -27,14 +27,14 @@ const getTickets = async (req, res, next) => {
             success: true,
             data: result,
         });
-        
-    }catch (error){
+
+    } catch (error) {
         next(error);
     }
 };
 
-const assignTicket = async(req, res, next) => {
-    try{
+const assignTicket = async (req, res, next) => {
+    try {
         const ticket = await ticketService.assignTicket(
             req.params.ticketId,
             req.body.agentId,
@@ -46,51 +46,51 @@ const assignTicket = async(req, res, next) => {
             message: "Ticket assigned successfully",
             data: ticket,
         })
-    }catch(error){
+    } catch (error) {
         next(error);
 
     }
 };
 
 const addComment = async (req, res, next) => {
-    try{
+    try {
         const ticket = await ticketService.addComment(
             req.params.ticketId,
             req.body.comment,
             req.user
         );
-        
+
         res.status(200).json({
             success: true,
             message: 'Comment added successfully',
             data: ticket,
         });
 
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 };
 const updateTicketStatus = async (req, res, next) => {
-  try {
-    const ticket = await ticketService.updateTicketStatus(
-      req.params.ticketId,
-      req.body.status,
-      req.body.note,
-      req.user
-    );
+    try {
+        const ticket = await ticketService.updateTicketStatus(
+            req.params.ticketId,
+            req.body.status,
+            req.body.note,
+            req.user
+        );
 
-    res.status(200).json({
-      success: true,
-      message: "Ticket status updated successfully",
-      data: ticket,
-    });
-  } catch (error) {
-    next(error);
-  }
+        res.status(200).json({
+            success: true,
+            message: "Ticket status updated successfully",
+            data: ticket,
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 const getTicketById = async (req, res, next) => {
-    try{
+    try {
         const ticket = await ticketService.getTicketById(
             req.params.ticketId,
             req.user
@@ -101,32 +101,65 @@ const getTicketById = async (req, res, next) => {
             message: "Ticket fetched successfully",
             data: ticket,
         });
-    }catch(error ){
+    } catch (error) {
         next(error);
     }
 };
 
-const getMyTickets = async (req, res, next) =>  {
-    try{
-        const tickets = await  ticketService.getMyTickets(req.user._id);
+const getMyTickets = async (req, res, next) => {
+    try {
+        const tickets = await ticketService.getMyTickets(req.user._id);
 
         res.status(200).json({
             success: true,
-            message:"My tickets fetched successfully",
+            message: "My tickets fetched successfully",
             data: tickets,
         });
-        
-    }catch(error) {
+
+    } catch (error) {
         next(error);
     };
 }
 
+const updateTicket = async (req, res, next) => {
+    try {
+        const ticket = await ticketService.updateTicket(
+            req.params.ticketId,
+            req.body,
+            req.user
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Ticket updated successfully",
+            data: ticket,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteTicket = async (req, res, next) => {
+    try {
+        await ticketService.deleteTicket(req.params.ticketId);
+
+        res.status(200).json({
+            success: true,
+            message: "Ticket deleted successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
-    createTicket,
-    getTickets,
-    assignTicket,
-    addComment,
-    updateTicketStatus,
-    getTicketById,
-    getMyTickets,
+  createTicket,
+  getTickets,
+  assignTicket,
+  addComment,
+  updateTicketStatus,
+  getTicketById,
+  getMyTickets,
+  updateTicket,
+  deleteTicket,
 };
